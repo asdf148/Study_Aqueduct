@@ -1,4 +1,5 @@
 import 'package:aqueduct/managed_auth.dart';
+import 'package:study_aqueduct/controller/register_controller.dart';
 import 'package:study_aqueduct/model/user.dart';
 
 import 'study_aqueduct.dart';
@@ -51,6 +52,10 @@ class StudyAqueductChannel extends ApplicationChannel {
   @override
   Controller get entryPoint {
     final router = Router();
+
+    router
+      .route('/register')
+      .link(() => RegisterController(context, authServer));
 
     // Prefer to use `link` instead of `linkFunction`.
     // See: https://aqueduct.io/docs/http/request_controller/
