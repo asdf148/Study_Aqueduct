@@ -1,6 +1,4 @@
-import 'package:aqueduct/managed_auth.dart';
-import 'package:study_aqueduct/controller/register_controller.dart';
-import 'package:study_aqueduct/model/user.dart';
+import 'package:study_aqueduct/controller/account_controller.dart';
 
 import 'study_aqueduct.dart';
 
@@ -17,7 +15,6 @@ class MyConfiguration extends Configuration {
 /// database connections. See http://aqueduct.io/docs/http/channel/.
 class StudyAqueductChannel extends ApplicationChannel {
   ManagedContext context;
-  AuthServer authServer;
   /// Initialize services in this method.
   ///
   /// Implement this method to initialize services, read values from [options]
@@ -39,8 +36,6 @@ class StudyAqueductChannel extends ApplicationChannel {
         config.database.databaseName);        
 
     context = ManagedContext(dataModel, psc);
-    final authStorage = ManagedAuthDelegate<User>(context);
-    authServer = AuthServer(authStorage);
   }
 
   /// Construct the request channel.
@@ -54,8 +49,10 @@ class StudyAqueductChannel extends ApplicationChannel {
     final router = Router();
 
     router
-      .route('/register')
-      .link(() => RegisterController(context, authServer));
+      ..route('/auth/signUp')
+        .linkFunction((req) => AccountController(context).signUp(req.body))
+      ..route('/auth/login')
+        .linkFunction((req) => AccountController(context).login(req.body));
 
     // Prefer to use `link` instead of `linkFunction`.
     // See: https://aqueduct.io/docs/http/request_controller/
